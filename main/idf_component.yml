@@ -1,0 +1,4 @@
+dependencies:
+  LED:
+    git: https://github.com/SuphawadiP/LED_Test.git 
+    path: components/LED
