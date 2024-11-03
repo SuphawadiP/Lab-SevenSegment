@@ -12,6 +12,9 @@ uint8_t counter = 0;
 // create task handle for LED display task
 TaskHandle_t xSevenSegmentHandle = NULL;
 
+// create task handle for counter task
+TaskHandle_t xCounterHandle = NULL;
+
 // create task and move code into it
 void vTaskScanSevenSegment(void *Parameters)
 {
@@ -29,6 +32,16 @@ void vTaskScanSevenSegment(void *Parameters)
     }
 }
 
+// add counter task, increment every 1000ms (1 second)
+void vTaskCounter(void *Parameters)
+{
+    while (1)
+    {
+        if(counter++ > 99)
+            counter = 0;
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
 
 // in main, create display task
 extern "C" void app_main(void)
@@ -36,6 +49,10 @@ extern "C" void app_main(void)
     xTaskCreate(vTaskScanSevenSegment, 
       "Seven Seg", 1024, NULL, 
       10, &xSevenSegmentHandle);
+
+    // create counter task with priority 5 (Lower than scan display task)   
+    xTaskCreate(vTaskCounter, "Counter", 
+        1024, NULL, 5, &xCounterHandle);
 }
 
 
